@@ -19,13 +19,24 @@ if ("$ENV{RUNNER_OS}" STREQUAL "Windows")
 endif()
 set(ENV{PATH} "$ENV{GITHUB_WORKSPACE}${path_separator}$ENV{PATH}")
 
+# CMakeLists.txt only include()s cmake/CodeCoverage.cmake (which defines the
+# CMAKE_*_FLAGS_COVERAGE variables, including --coverage) when CMAKE_BUILD_TYPE
+# is literally "Coverage" -- never "Debug". Substitute it in for exactly the
+# leg that actually uploads coverage (ci.yml's Codecov/gcovr-action steps only
+# run when runner.os == Linux && matrix.build_type == Debug); every other leg
+# keeps getting the real Debug/Release value, untouched.
+set(actual_build_type "$ENV{BUILD_TYPE}")
+if ("$ENV{RUNNER_OS}" STREQUAL "Linux" AND "$ENV{CC}" STREQUAL "gcc" AND "$ENV{BUILD_TYPE}" STREQUAL "Debug")
+	set(actual_build_type "Coverage")
+endif()
+
 if ("$ENV{RUNNER_OS}" STREQUAL "Windows")
 	file(TO_CMAKE_PATH "$ENV{GITHUB_WORKSPACE}/vcpkg/scripts/buildsystems/vcpkg.cmake" toolchain_file)
 	execute_process(
 		COMMAND cmake
 			-S .
 			-B build
-			-D CMAKE_BUILD_TYPE=$ENV{BUILD_TYPE}
+			-D CMAKE_BUILD_TYPE=${actual_build_type}
 			-G "Ninja"
 			-D CMAKE_MAKE_PROGRAM=ninja
 			-D CMAKE_C_COMPILER_LAUNCHER=ccache
@@ -39,7 +50,7 @@ else()
 		COMMAND cmake
 			-S .
 			-B build
-			-D CMAKE_BUILD_TYPE=$ENV{BUILD_TYPE}
+			-D CMAKE_BUILD_TYPE=${actual_build_type}
 			-G "Ninja"
 			-D CMAKE_MAKE_PROGRAM=ninja
 			-D CMAKE_C_COMPILER_LAUNCHER=ccache
