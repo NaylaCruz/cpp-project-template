@@ -1,0 +1,40 @@
+name: Windows CI Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: Install vcpkg dependencies
+        shell: pwsh
+        run: |
+          git clone --depth 1 https://github.com/microsoft/vcpkg.git vcpkg
+          .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+          .\vcpkg\vcpkg install --triplet x64-windows-debug --overlay-triplets=".gitlab\vcpkg-triplets"
+
+      - name: Configure
+        shell: pwsh
+        run: |
+          cmake -S . -B build `
+            -G "Visual Studio 17 2022" `
+            -A x64 `
+            -D CMAKE_BUILD_TYPE=Debug `
+            -D VCPKG_TARGET_TRIPLET=x64-windows-debug `
+            -D VCPKG_OVERLAY_TRIPLETS=".gitlab\vcpkg-triplets" `
+            -D VCPKG_MANIFEST_MODE=ON `
+            -D CMAKE_TOOLCHAIN_FILE="$PWD\vcpkg\scripts\buildsystems\vcpkg.cmake"
+
+      - name: Build
+        run: cmake --build build --config Debug -- /m
+
+      - name: Test
+        run: ctest -C Debug --output-on-failure
