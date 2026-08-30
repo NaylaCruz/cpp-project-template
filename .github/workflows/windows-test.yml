@@ -8,16 +8,45 @@ jobs:
     runs-on: windows-2022
 
     steps:
+      - name: Checkout GitHub repository
+        uses: actions/checkout@v4
+
       - name: Checkout GitLab main
         shell: pwsh
         run: |
-          git clone --depth 1 --branch main https://gitlab.com/AuroraXEMY/cpp-project-template.git .
+          $ErrorActionPreference = "Stop"
+
+          if (Test-Path gitlab-source) {
+            Remove-Item -Recurse -Force gitlab-source
+          }
+
+          git clone --depth 1 --branch main `
+            https://gitlab.com/AuroraXEMY/cpp-project-template.git `
+            gitlab-source
+
+      - name: Prepare GitLab source
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = "Stop"
+
+          Copy-Item `
+            ".gitlab\vcpkg-triplets" `
+            "gitlab-source\.gitlab\vcpkg-triplets" `
+            -Recurse `
+            -Force
+
+          Set-Location gitlab-source
+
+          if (!(Test-Path ".gitlab\vcpkg-triplets\x64-windows-debug.cmake")) {
+            Write-Error "x64-windows-debug.cmake is missing"
+          }
 
       - name: Setup MSVC
         uses: ilammy/msvc-dev-cmd@v1
 
       - name: Prepare vcpkg
         shell: pwsh
+        working-directory: gitlab-source
         run: |
           $ErrorActionPreference = "Stop"
           $ProgressPreference = "SilentlyContinue"
@@ -29,64 +58,67 @@ jobs:
 
           if (Test-Path "vcpkg.json") {
             $manifest = Get-Content "vcpkg.json" -Raw | ConvertFrom-Json
+
             if ($manifest.'builtin-baseline') {
               $vcpkgRef = $manifest.'builtin-baseline'
             }
           }
 
           git init vcpkg
-          cd vcpkg
+          Set-Location vcpkg
+
           git remote add origin https://github.com/microsoft/vcpkg.git
           git fetch --depth 1 --no-tags origin "$vcpkgRef"
           git checkout FETCH_HEAD
-          cd ..
+
+          Set-Location ..
 
           .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
 
-      - name: Verify custom triplet
-        shell: pwsh
-        run: |
-          $triplet = ".gitlab\vcpkg-triplets\x64-windows-debug.cmake"
-
-          if (!(Test-Path $triplet)) {
-            Write-Error "Missing custom triplet: $triplet"
-          }
-
-          Get-Content $triplet
-
       - name: Install vcpkg dependencies
         shell: pwsh
+        working-directory: gitlab-source
         run: |
           $ErrorActionPreference = "Stop"
 
-          New-Item -ItemType Directory -Force -Path "vcpkg_cache" | Out-Null
+          New-Item `
+            -ItemType Directory `
+            -Force `
+            -Path "vcpkg_cache" | Out-Null
 
-          $env:VCPKG_BINARY_SOURCES = "clear;files,$env:GITHUB_WORKSPACE\vcpkg_cache,readwrite"
+          $env:VCPKG_BINARY_SOURCES =
+            "clear;files,$env:GITHUB_WORKSPACE\gitlab-source\vcpkg_cache,readwrite"
+
           $env:VCPKG_MANIFEST_MODE = "ON"
 
-          .\vcpkg\vcpkg install `
+          .\vcpkg\vcpkg.exe install `
             --triplet x64-windows-debug `
-            --overlay-triplets="$env:GITHUB_WORKSPACE\.gitlab\vcpkg-triplets"
+            --overlay-triplets="$env:GITHUB_WORKSPACE\gitlab-source\.gitlab\vcpkg-triplets"
 
       - name: Configure CMake
         shell: pwsh
+        working-directory: gitlab-source
         run: |
+          $ErrorActionPreference = "Stop"
+
           cmake -S . -B build `
             -G "Visual Studio 17 2022" `
             -A x64 `
             -D CMAKE_BUILD_TYPE=Debug `
             -D VCPKG_TARGET_TRIPLET=x64-windows-debug `
-            -D VCPKG_OVERLAY_TRIPLETS="$env:GITHUB_WORKSPACE\.gitlab\vcpkg-triplets" `
+            -D VCPKG_OVERLAY_TRIPLETS="$env:GITHUB_WORKSPACE\gitlab-source\.gitlab\vcpkg-triplets" `
             -D VCPKG_MANIFEST_MODE=ON `
-            -D CMAKE_TOOLCHAIN_FILE="$env:GITHUB_WORKSPACE\vcpkg\scripts\buildsystems\vcpkg.cmake"
+            -D CMAKE_TOOLCHAIN_FILE="$env:GITHUB_WORKSPACE\gitlab-source\vcpkg\scripts\buildsystems\vcpkg.cmake"
 
       - name: Build Debug
         shell: pwsh
+        working-directory: gitlab-source
         run: |
           cmake --build build --config Debug -- /m
 
       - name: Test Debug
         shell: pwsh
+        working-directory: gitlab-source
         run: |
           cd build
           ctest -C Debug --output-on-failure
