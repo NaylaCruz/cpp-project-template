@@ -27,43 +27,39 @@ jobs:
 
           $vcpkgRef = "master"
 
-          if (Test-Path "$env:GITHUB_WORKSPACE\vcpkg.json") {
-            $manifest = Get-Content "$env:GITHUB_WORKSPACE\vcpkg.json" -Raw | ConvertFrom-Json
+          if (Test-Path "vcpkg.json") {
+            $manifest = Get-Content "vcpkg.json" -Raw | ConvertFrom-Json
             if ($manifest.'builtin-baseline') {
               $vcpkgRef = $manifest.'builtin-baseline'
             }
           }
 
-          if (Test-Path "$env:GITHUB_WORKSPACE\vcpkg") {
-            Remove-Item -Recurse -Force "$env:GITHUB_WORKSPACE\vcpkg"
-          }
-
-          git init "$env:GITHUB_WORKSPACE\vcpkg"
-          cd "$env:GITHUB_WORKSPACE\vcpkg"
-
+          git init vcpkg
+          cd vcpkg
           git remote add origin https://github.com/microsoft/vcpkg.git
           git fetch --depth 1 --no-tags origin "$vcpkgRef"
-
-          if ($LASTEXITCODE -eq 0) {
-            git checkout FETCH_HEAD
-          } else {
-            cd "$env:GITHUB_WORKSPACE"
-            Remove-Item -Recurse -Force vcpkg
-            git clone https://github.com/microsoft/vcpkg.git vcpkg
-            cd vcpkg
-            git checkout "$vcpkgRef"
-          }
-
-          cd "$env:GITHUB_WORKSPACE"
+          git checkout FETCH_HEAD
+          cd ..
 
           .\vcpkg\bootstrap-vcpkg.bat -disableMetrics
+
+      - name: Verify custom triplet
+        shell: pwsh
+        run: |
+          $triplet = ".gitlab\vcpkg-triplets\x64-windows-debug.cmake"
+
+          if (!(Test-Path $triplet)) {
+            Write-Error "Missing custom triplet: $triplet"
+          }
+
+          Get-Content $triplet
 
       - name: Install vcpkg dependencies
         shell: pwsh
         run: |
           $ErrorActionPreference = "Stop"
 
-          New-Item -ItemType Directory -Force -Path "$env:GITHUB_WORKSPACE\vcpkg_cache" | Out-Null
+          New-Item -ItemType Directory -Force -Path "vcpkg_cache" | Out-Null
 
           $env:VCPKG_BINARY_SOURCES = "clear;files,$env:GITHUB_WORKSPACE\vcpkg_cache,readwrite"
           $env:VCPKG_MANIFEST_MODE = "ON"
@@ -72,37 +68,25 @@ jobs:
             --triplet x64-windows-debug `
             --overlay-triplets="$env:GITHUB_WORKSPACE\.gitlab\vcpkg-triplets"
 
-          "VCPKG_BINARY_SOURCES=$env:VCPKG_BINARY_SOURCES" >> $env:GITHUB_ENV
-          "VCPKG_MANIFEST_MODE=ON" >> $env:GITHUB_ENV
-
       - name: Configure CMake
         shell: pwsh
         run: |
-          $ErrorActionPreference = "Stop"
-
-          $overlayTripletsDir = "$env:GITHUB_WORKSPACE\.gitlab\vcpkg-triplets"
-          $toolchain = "$env:GITHUB_WORKSPACE\vcpkg\scripts\buildsystems\vcpkg.cmake"
-
           cmake -S . -B build `
             -G "Visual Studio 17 2022" `
             -A x64 `
             -D CMAKE_BUILD_TYPE=Debug `
             -D VCPKG_TARGET_TRIPLET=x64-windows-debug `
-            -D VCPKG_OVERLAY_TRIPLETS="$overlayTripletsDir" `
+            -D VCPKG_OVERLAY_TRIPLETS="$env:GITHUB_WORKSPACE\.gitlab\vcpkg-triplets" `
             -D VCPKG_MANIFEST_MODE=ON `
-            -D CMAKE_TOOLCHAIN_FILE="$toolchain"
+            -D CMAKE_TOOLCHAIN_FILE="$env:GITHUB_WORKSPACE\vcpkg\scripts\buildsystems\vcpkg.cmake"
 
       - name: Build Debug
         shell: pwsh
         run: |
-          $ErrorActionPreference = "Stop"
-
           cmake --build build --config Debug -- /m
 
       - name: Test Debug
         shell: pwsh
         run: |
-          $ErrorActionPreference = "Stop"
-
           cd build
           ctest -C Debug --output-on-failure
