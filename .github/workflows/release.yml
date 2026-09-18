@@ -478,17 +478,38 @@ jobs:
             esac
             package_files+=("$f")
           done
-          test "${#package_files[@]}" -eq 38 || {
-            echo "Unexpected package artifact count: ${#package_files[@]}"
-            printf '%s\n' "${package_files[@]}"
-            exit 1
-          }
+          # Thirty non-LLVM packages are mandatory. Each LLVM architecture
+          # contributes four optional packages because those matrix legs are
+          # intentionally non-blocking on tag releases.
+          non_llvm_count=0
+          llvm_x64_count=0
+          llvm_x86_count=0
           for f in "${package_files[@]}"; do
             case "$f" in
               cpp-project-template_${version}_windows-msvc-x86_64.zip|cpp-project-template_${version}_windows-msvc-x86_64.7z|cpp-project-template_${version}_windows-msvc-x86_64_nsis.exe|cpp-project-template_${version}_windows-msvc-x86_64_wix.msi|cpp-project-template_${version}_windows-msvc-i686.zip|cpp-project-template_${version}_windows-msvc-i686.7z|cpp-project-template_${version}_windows-msvc-i686_nsis.exe|cpp-project-template_${version}_windows-msvc-i686_wix.msi|cpp-project-template_${version}_windows-mingw-x86_64.zip|cpp-project-template_${version}_windows-mingw-x86_64.7z|cpp-project-template_${version}_windows-mingw-x86_64_nsis.exe|cpp-project-template_${version}_windows-mingw-x86_64_wix.msi|cpp-project-template_${version}_windows-mingw-i686.zip|cpp-project-template_${version}_windows-mingw-i686.7z|cpp-project-template_${version}_windows-mingw-i686_nsis.exe|cpp-project-template_${version}_windows-mingw-i686_wix.msi|cpp-project-template_${version}_windows-llvm-x86_64.zip|cpp-project-template_${version}_windows-llvm-x86_64.7z|cpp-project-template_${version}_windows-llvm-x86_64_nsis.exe|cpp-project-template_${version}_windows-llvm-x86_64_wix.msi|cpp-project-template_${version}_windows-llvm-i686.zip|cpp-project-template_${version}_windows-llvm-i686.7z|cpp-project-template_${version}_windows-llvm-i686_nsis.exe|cpp-project-template_${version}_windows-llvm-i686_wix.msi|cpp-project-template_${version}_linux-gcc-x86_64.zip|cpp-project-template_${version}_linux-gcc-x86_64.7z|cpp-project-template_${version}_linux-gcc-x86_64.tar.gz|cpp-project-template_${version}_linux-gcc-x86_64.deb|cpp-project-template_${version}_linux-gcc-x86_64.rpm|cpp-project-template_${version}_linux-gcc-arm64.zip|cpp-project-template_${version}_linux-gcc-arm64.7z|cpp-project-template_${version}_linux-gcc-arm64.tar.gz|cpp-project-template_${version}_linux-gcc-arm64.deb|cpp-project-template_${version}_linux-gcc-arm64.rpm|cpp-project-template_${version}_macos-clang-arm64.zip|cpp-project-template_${version}_macos-clang-arm64.7z|cpp-project-template_${version}_macos-clang-arm64.tar.gz|cpp-project-template_${version}_macos-clang-arm64.dmg) ;;
               *) echo "Unexpected release artifact name: $f"; exit 1 ;;
             esac
+
+            case "$f" in
+              *_windows-llvm-x86_64.*) llvm_x64_count=$((llvm_x64_count + 1)) ;;
+              *_windows-llvm-i686.*) llvm_x86_count=$((llvm_x86_count + 1)) ;;
+              *) non_llvm_count=$((non_llvm_count + 1)) ;;
+            esac
           done
+
+          test "$non_llvm_count" -eq 30 || {
+            echo "Unexpected mandatory package count: $non_llvm_count (expected 30)"
+            printf '%s\n' "${package_files[@]}"
+            exit 1
+          }
+          case "$llvm_x64_count" in
+            0|4) ;;
+            *) echo "Incomplete Windows LLVM x64 package set: $llvm_x64_count (expected 0 or 4)"; exit 1 ;;
+          esac
+          case "$llvm_x86_count" in
+            0|4) ;;
+            *) echo "Incomplete Windows LLVM x86 package set: $llvm_x86_count (expected 0 or 4)"; exit 1 ;;
+          esac
       - name: Write global SHA256SUMS
         working-directory: release-assets
         run: |
