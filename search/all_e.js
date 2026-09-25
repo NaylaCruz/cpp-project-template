@@ -1,0 +1,27 @@
+var searchData=
+[
+  ['edit_0',['PASS 0 — Reconnaissance (baseline, before any edit)',['../md_docs_2distribution-hardening-evidence.html#autotoc_md310',1,'']]],
+  ['editing_1',['Findings (re-proven from this HEAD before editing)',['../md_docs_2distribution-hardening-evidence.html#autotoc_md320',1,'']]],
+  ['engineering_20characteristics_20of_20the_20original_2',['3.3 Engineering characteristics of the original',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md109',1,'']]],
+  ['engineering_20documentation_3',['C++ Project Template — Engineering Documentation',['../md_docs_2PROJECT__DOCUMENTATION.html',1,'']]],
+  ['enterprise_20readiness_20decision_4',['24. Enterprise-readiness decision',['../md_docs_2AUDIT.html#autotoc_md88',1,'']]],
+  ['entirely_5',['7.4 D4 — Remove Android/NDK entirely',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md132',1,'']]],
+  ['evidence_6',['evidence',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md183',1,'16.2 Root causes and evidence'],['../md_docs_2AUDIT.html#autotoc_md64',1,'21. Validation evidence'],['../md_docs_2AUDIT.html#autotoc_md93',1,'Release evidence']]],
+  ['evidence_20and_20audit_20trail_7',['40. Release evidence and audit trail',['../md_docs_2TASKS.html#autotoc_md257',1,'']]],
+  ['evidence_20cited_20in_20this_20document_8',['14. Verification Ledger (evidence cited in this document)',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md177',1,'']]],
+  ['evidence_20contract_9',['New release manifest/evidence contract',['../md_docs_2AUDIT.html#autotoc_md61',1,'']]],
+  ['evidence_20ledger_10',['Distribution Hardening — Evidence Ledger',['../md_docs_2distribution-hardening-evidence.html',1,'']]],
+  ['evidence_20ledger_11',['16.9 Evidence ledger',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md190',1,'']]],
+  ['evidence_20note_12',['13.8 Team / evidence note',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md175',1,'']]],
+  ['evidence_20target_20repo_20dispatches_202026_2009_2025_13',['Live acceptance evidence (target-repo dispatches, 2026-09-25)',['../md_docs_2distribution-hardening-evidence.html#autotoc_md323',1,'']]],
+  ['evidence_20urls_14',['25. Evidence URLs',['../md_docs_2AUDIT.html#autotoc_md91',1,'']]],
+  ['evt_5fmenu_15',['EVT_MENU',['../MainFrame_8cpp.html#a9e1b208ff1ef9d70e769e18985fb17c5',1,'MainFrame.cpp']]],
+  ['exact_20future_20changes_20proposed_16',['18. Exact future changes proposed',['../md_docs_2AUDIT.html#autotoc_md52',1,'']]],
+  ['exact_20repository_20snapshot_17',['Exact repository snapshot',['../md_docs_2AUDIT.html#autotoc_md73',1,'']]],
+  ['executive_20finding_18',['3. Executive finding',['../md_docs_2AUDIT.html#autotoc_md3',1,'']]],
+  ['executive_20summary_19',['1. Executive Summary',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md102',1,'']]],
+  ['existing_20items_20intentionally_20not_20changed_20',['12.5 Pre-existing items intentionally not changed',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md165',1,'']]],
+  ['experience_21',['P1 — Installer/package lifecycle and user experience',['../md_docs_2TASKS.html#autotoc_md245',1,'']]],
+  ['experimental_20staging_20lane_22',['7.14 D14 — Experimental staging lane',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md142',1,'']]],
+  ['explicitly_20out_20of_20scope_20unless_20separately_20justified_23',['Explicitly out of scope unless separately justified',['../md_docs_2TASKS.html#autotoc_md271',1,'']]]
+];

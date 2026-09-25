@@ -1,0 +1,16 @@
+var searchData=
+[
+  ['0_20—_20reconnaissance_20baseline_20before_20any_20edit_0',['PASS 0 — Reconnaissance (baseline, before any edit)',['../md_docs_2distribution-hardening-evidence.html#autotoc_md310',1,'']]],
+  ['0_201_20→_20current_20v0_200_204_1',['6.4 Release asset delta (MangaD &lt;span class=&quot;tt&quot;&gt;v0.0.1&lt;/span&gt; → current &lt;span class=&quot;tt&quot;&gt;v0.0.4&lt;/span&gt;)',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md125',1,'']]],
+  ['0_204_2',['6.4 Release asset delta (MangaD &lt;span class=&quot;tt&quot;&gt;v0.0.1&lt;/span&gt; → current &lt;span class=&quot;tt&quot;&gt;v0.0.4&lt;/span&gt;)',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md125',1,'']]],
+  ['0_209_3',['0 9',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md169',1,'13.2 New policy (current, &lt;span class=&quot;tt&quot;&gt;v0.0.9&lt;/span&gt;)'],['../md_docs_2AUDIT.html#autotoc_md10',1,'5. Current distribution inventory — v0.0.9'],['../md_docs_2distribution-hardening-evidence.html#autotoc_md311',1,'Baseline release contract (live, &lt;span class=&quot;tt&quot;&gt;v0.0.9&lt;/span&gt;)']]],
+  ['0_209_20github_20validation_4',['v0.0.9 GitHub validation',['../md_docs_2AUDIT.html#autotoc_md66',1,'']]],
+  ['001_5',['7.7 D7 — CMakePresets as the single source of build truth (&lt;span class=&quot;tt&quot;&gt;ADR 001&lt;/span&gt;)',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md135',1,'']]],
+  ['002_6',['7.5 D5 — Deterministic cache keys (&lt;span class=&quot;tt&quot;&gt;ADR 002&lt;/span&gt;)',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md133',1,'']]],
+  ['003_7',['7.6 D6 — Pin third-party actions to commit SHAs (&lt;span class=&quot;tt&quot;&gt;ADR 003&lt;/span&gt;)',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md134',1,'']]],
+  ['004_8',['7.8 D8 — Manual Coverity (&lt;span class=&quot;tt&quot;&gt;ADR 004&lt;/span&gt;)',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md136',1,'']]],
+  ['005_20ci_20yml_9',['7.2 D2 — Strict separation of release workflows (&lt;span class=&quot;tt&quot;&gt;ADR 005&lt;/span&gt; + &lt;span class=&quot;tt&quot;&gt;ci.yml&lt;/span&gt;)',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md130',1,'']]],
+  ['006_202026_2009_2025_10',['PASS 4 — vcpkg binary-cache contract (ADR 006, 2026-09-25)',['../md_docs_2distribution-hardening-evidence.html#autotoc_md319',1,'']]],
+  ['09_2023_11',['09 23',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md155',1,'11. Compiler &amp;amp; Architecture Q&amp;amp;A (2026-09-23)'],['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md167',1,'13. Release Archive Policy — Session Record (2026-09-23)'],['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md126',1,'6.5 Archive-format policy (decision record, 2026-09-23)']]],
+  ['09_2025_12',['09 25',['../md_docs_2PROJECT__DOCUMENTATION.html#autotoc_md181',1,'16. CI cache and release publication repair (2026-09-25)'],['../md_docs_2distribution-hardening-evidence.html#autotoc_md323',1,'Live acceptance evidence (target-repo dispatches, 2026-09-25)'],['../md_docs_2distribution-hardening-evidence.html#autotoc_md314',1,'PASS 1-3 — Implementation and local validation (2026-09-25)'],['../md_docs_2distribution-hardening-evidence.html#autotoc_md319',1,'PASS 4 — vcpkg binary-cache contract (ADR 006, 2026-09-25)']]]
+];
